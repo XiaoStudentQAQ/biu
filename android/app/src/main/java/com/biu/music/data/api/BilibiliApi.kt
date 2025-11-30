@@ -3,6 +3,7 @@ package com.biu.music.data.api
 import com.biu.music.data.model.*
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 interface BilibiliApi {
     
@@ -19,10 +20,7 @@ interface BilibiliApi {
      */
     @GET("x/player/wbi/playurl")
     suspend fun getPlayUrl(
-        @Query("bvid") bvid: String,
-        @Query("cid") cid: Long,
-        @Query("qn") quality: Int = 64,
-        @Query("fnval") fnval: Int = 16  // DASH 格式
+        @QueryMap(encoded = true) params: Map<String, String>
     ): ApiResponse<PlayUrlData>
     
     /**
@@ -42,14 +40,14 @@ interface BilibiliApi {
     suspend fun getMusicRank(
         @Query("rid") rid: Int = 3,  // 3 = 音乐区
         @Query("type") type: String = "all"
-    ): ApiResponse<List<MusicRankItem>>
+    ): ApiResponse<MusicRankResponse>
     
     /**
      * 获取用户信息
      */
     @GET("x/space/wbi/acc/info")
     suspend fun getUserInfo(
-        @Query("mid") mid: Long
+        @QueryMap(encoded = true) params: Map<String, String>
     ): ApiResponse<UserInfo>
     
     /**
@@ -59,4 +57,10 @@ interface BilibiliApi {
     suspend fun getFavFolders(
         @Query("up_mid") mid: Long
     ): ApiResponse<List<FavFolder>>
+    
+    /**
+     * 获取 WBI 授权所需的 key
+     */
+    @GET("x/web-interface/nav")
+    suspend fun getNavInfo(): ApiResponse<NavInfo>
 }

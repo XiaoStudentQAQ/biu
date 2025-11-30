@@ -119,6 +119,12 @@ data class MusicRankItem(
 )
 
 @Serializable
+data class MusicRankResponse(
+    @SerialName("list") val list: List<MusicRankItem> = emptyList(),
+    @SerialName("note") val note: String? = null
+)
+
+@Serializable
 data class UserInfo(
     @SerialName("mid") val mid: Long,
     @SerialName("name") val name: String,
@@ -135,4 +141,15 @@ data class FavFolder(
     @SerialName("title") val title: String,
     @SerialName("cover") val cover: String = "",
     @SerialName("media_count") val mediaCount: Int = 0
+)
+
+@Serializable
+data class NavInfo(
+    @SerialName("wbi_img") val wbiImg: WbiImage? = null
+)
+
+@Serializable
+data class WbiImage(
+    @SerialName("img_url") val imgUrl: String = "",
+    @SerialName("sub_url") val subUrl: String = ""
 )

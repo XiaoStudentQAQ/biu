@@ -23,7 +23,8 @@
 
     <application
         android:name=".BiuApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -49,7 +50,7 @@
         <service
             android:name=".player.PlaybackService"
             android:foregroundServiceType="mediaPlayback"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService"/>
             </intent-filter>

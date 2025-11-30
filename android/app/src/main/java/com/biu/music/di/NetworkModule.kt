@@ -2,6 +2,7 @@ package com.biu.music.di
 
 import com.biu.music.data.api.BilibiliApi
 import com.biu.music.data.api.BilibiliInterceptor
+import com.biu.music.data.api.RetryInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -29,17 +30,31 @@ object NetworkModule {
     
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        bilibiliInterceptor: BilibiliInterceptor,
+        retryInterceptor: RetryInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(BilibiliInterceptor())
+            .addInterceptor(bilibiliInterceptor)
+            .addInterceptor(retryInterceptor)
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BASIC
+                    level = if (com.biu.music.BuildConfig.DEBUG) {
+                        // 不记录 HEADERS 避免泄露 Cookie
+                        HttpLoggingInterceptor.Level.BASIC
+                    } else {
+                        HttpLoggingInterceptor.Level.NONE
+                    }
+                    // 敏感信息过滤
+                    redactHeader("Cookie")
+                    redactHeader("Authorization")
                 }
             )
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
+            // 添加重试机制
+            .retryOnConnectionFailure(true)
             .build()
     }
     

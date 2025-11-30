@@ -29,6 +29,7 @@ class HomeViewModel @Inject constructor(
     
     val currentTrack = musicPlayer.currentTrack
     val isPlaying = musicPlayer.isPlaying
+    val playbackError = musicPlayer.playbackError
     
     init {
         loadMusicRank()
@@ -54,6 +55,7 @@ class HomeViewModel @Inject constructor(
     fun playMusic(bvid: String) {
         viewModelScope.launch {
             _isLoading.value = true
+            _errorMessage.value = null
             
             repository.getVideoInfo(bvid)
                 .onSuccess { videoInfo ->
@@ -94,6 +96,10 @@ class HomeViewModel @Inject constructor(
     
     fun clearError() {
         _errorMessage.value = null
+    }
+    
+    fun clearPlaybackError() {
+        musicPlayer.clearError()
     }
 }
 

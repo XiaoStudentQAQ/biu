@@ -7,6 +7,28 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+fun String.escapeForBuildConfig(): String = this
+    .replace("\\", "\\\\")
+    .replace("\"", "\\\"")
+
+val defaultBilibiliUserAgent =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+val defaultBilibiliReferer = "https://www.bilibili.com"
+val bilibiliCookie =
+    (project.findProperty("BILIBILI_COOKIE") as? String).orEmpty().escapeForBuildConfig()
+val bilibiliUserAgent = (
+    (project.findProperty("BILIBILI_USER_AGENT") as? String)?.takeIf { it.isNotBlank() }
+        ?: defaultBilibiliUserAgent
+    ).escapeForBuildConfig()
+val bilibiliReferer = (
+    (project.findProperty("BILIBILI_REFERER") as? String)?.takeIf { it.isNotBlank() }
+        ?: defaultBilibiliReferer
+    ).escapeForBuildConfig()
+val bilibiliOrigin = (
+    (project.findProperty("BILIBILI_ORIGIN") as? String)?.takeIf { it.isNotBlank() }
+        ?: bilibiliReferer
+    ).escapeForBuildConfig()
+
 android {
     namespace = "com.biu.music"
     compileSdk = 35
@@ -19,6 +41,10 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "BILIBILI_COOKIE", "\"$bilibiliCookie\"")
+        buildConfigField("String", "BILIBILI_USER_AGENT", "\"$bilibiliUserAgent\"")
+        buildConfigField("String", "BILIBILI_REFERER", "\"$bilibiliReferer\"")
+        buildConfigField("String", "BILIBILI_ORIGIN", "\"$bilibiliOrigin\"")
         
         vectorDrawables {
             useSupportLibrary = true
@@ -111,6 +137,9 @@ dependencies {
     
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+    
+    // Security - EncryptedSharedPreferences
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
     
     // WorkManager (下载)
     implementation("androidx.work:work-runtime-ktx:2.10.0")

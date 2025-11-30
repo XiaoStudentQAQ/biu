@@ -6,10 +6,19 @@
         </trust-anchors>
     </base-config>
     
-    <!-- Bilibili API 域名 -->
+    <!-- Bilibili API 域名 - 添加证书固定 -->
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="true">bilibili.com</domain>
         <domain includeSubdomains="true">bilivideo.com</domain>
         <domain includeSubdomains="true">hdslb.com</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+        <!-- 启用证书透明度检查 -->
+        <pin-set expiration="2026-12-31">
+            <!-- 这些是示例，需要替换为实际的证书指纹 -->
+            <!-- 使用以下命令获取: openssl s_client -servername api.bilibili.com -connect api.bilibili.com:443 | openssl x509 -pubkey -noout | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | base64 -->
+            <!-- 建议添加备份证书以防主证书更新 -->
+        </pin-set>
     </domain-config>
 </network-security-config>

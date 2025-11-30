@@ -14,7 +14,7 @@
    ```bash
    # 方法 1: 通过 ADB
    adb install app-debug.apk
-   
+
    # 方法 2: 直接在设备上打开 APK 文件安装
    ```
 
@@ -102,13 +102,13 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 **A**: 检查网络连接，确保可以访问 Bilibili。
 
 ### Q: 没有声音？
-**A**: 
+**A**:
 1. 检查设备音量
 2. 检查应用是否有音频权限
 3. 尝试重启应用
 
 ### Q: 应用闪退？
-**A**: 
+**A**:
 1. 确保 Android 版本 >= 8.0
 2. 清除应用数据重试
 3. 查看日志：`adb logcat | grep Biu`
